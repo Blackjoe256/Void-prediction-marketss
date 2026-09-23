@@ -1,0 +1,10 @@
+{
+  "description": "Engage campus students in a fun, point-based prediction market to forecast guild election outcomes and connect via a dedicated WhatsApp group.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
