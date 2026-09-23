@@ -1,5 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import voidLogo from "@/imports/image.png";
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 function VoidLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const scale = size === "lg" ? 1 : size === "sm" ? 0.45 : 0.75;
@@ -458,6 +459,7 @@ export default function App() {
           </p>
         </footer>
       </div>
+      <SpeedInsights />
     </div>
   );
 }
