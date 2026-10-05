@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef, useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import voidLogo from "@/imports/image.png";
 
@@ -35,6 +36,181 @@ function VoidLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
 }
 
 const SITE_LINK = "https://voidpredictionmarkets.com/";
+
+/* ── Pill sticker flow ──────────────────────────────────────────
+   The two stickers share this page. Their QR codes differ only by
+   ?pill=red or ?pill=blue. "Own the Odds" then behaves like this:
+     red / no pill → straight to the app (as before)
+     blue          → full-screen video, then a button to the app   */
+type Pill = "red" | "blue";
+
+const BLUE_HASH = "#blue-pill";
+
+/** Which sticker was scanned? Read ?pill= once and remember it for the visit. */
+function readPill(): Pill | null {
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get("pill");
+    if (fromUrl === "red" || fromUrl === "blue") {
+      sessionStorage.setItem("void-pill", fromUrl);
+      return fromUrl;
+    }
+    const saved = sessionStorage.getItem("void-pill");
+    return saved === "red" || saved === "blue" ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+/** App link. Sticker visitors get source tags so the app's analytics can tell the pills apart. */
+function appLink(pill: Pill | null): string {
+  if (!pill) return SITE_LINK;
+  const params = new URLSearchParams({
+    utm_source: "sticker",
+    utm_medium: "qr",
+    utm_campaign: "pill",
+    utm_content: pill,
+  });
+  return `${SITE_LINK}?${params.toString()}`;
+}
+
+function BluePillVideo({ onClose, link }: { onClose: () => void; link: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [ended, setEnded] = useState(false);
+  const [needsTap, setNeedsTap] = useState(false);
+
+  const play = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => setNeedsTap(true)); // browser blocked sound-on autoplay → ask for a tap
+  };
+
+  const replay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.currentTime = 0;
+    setEnded(false);
+    play();
+  };
+
+  useEffect(() => {
+    play();
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Blue pill"
+      className="fixed inset-0 z-50 overflow-y-auto overscroll-contain"
+      style={{ background: "#020202" }}
+    >
+      <GridBackground />
+      <ParticleField />
+
+      <div className="relative z-10 min-h-full flex flex-col items-center justify-center gap-5 px-5 py-14 text-center">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-4 left-4 px-3 py-2 font-orbitron text-[10px] tracking-[0.3em] uppercase text-[#38b6ffaa] hover:text-[#38b6ff] transition-colors"
+        >
+          ← Back
+        </button>
+
+        <div
+          className="inline-block px-4 py-1 rounded-full border font-orbitron text-[10px] tracking-[0.4em] uppercase"
+          style={{ color: "#38b6ff", borderColor: "#38b6ff44", background: "rgba(56,182,255,0.06)" }}
+        >
+          Blue pill · Stay in the dream
+        </div>
+
+        <div
+          className="relative overflow-hidden rounded-2xl"
+          style={{
+            aspectRatio: "16 / 9",
+            width: "min(92vw, 560px)",
+            border: "2px solid #38b6ff88",
+            boxShadow: "0 0 40px #38b6ff44, 0 0 90px #38b6ff22",
+            background: "#f8f8fb",
+          }}
+        >
+          <video
+            ref={videoRef}
+            poster="/blue-pill-poster.jpg"
+            playsInline
+            preload="auto"
+            onPlay={() => setNeedsTap(false)}
+            onEnded={() => setEnded(true)}
+            className="h-full w-full object-cover"
+          >
+            <source src="/blue-pill.mp4" type="video/mp4" />
+            <source
+              src="/blue-pill.webm"
+              type="video/webm"
+              onError={() => setEnded(true)} /* last source failed → nothing playable, skip to the button */
+            />
+          </video>
+          {needsTap && !ended && (
+            <button
+              type="button"
+              onClick={play}
+              className="absolute inset-0 flex items-center justify-center font-orbitron font-bold text-sm tracking-[0.3em] uppercase text-white"
+              style={{ background: "rgba(2,2,2,0.55)" }}
+            >
+              ▶ Tap to play
+            </button>
+          )}
+        </div>
+
+        <div className="min-h-[190px] flex flex-col items-center justify-start gap-3">
+          {ended ? (
+            <div className="animate-slide-up flex flex-col items-center gap-3">
+              <p className="font-orbitron font-bold text-base sm:text-lg text-white tracking-wide">
+                You took the blue pill.
+              </p>
+              <p className="font-outfit text-[#888] text-sm max-w-xs">
+                Nothing happened. Except now you&apos;re curious.
+              </p>
+              <a
+                href={link}
+                className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full font-orbitron font-bold text-sm tracking-widest uppercase text-[#020202] transition-all duration-300 hover:scale-105 active:scale-95"
+                style={{
+                  background: "linear-gradient(135deg, #00ff7f 0%, #00c96e 100%)",
+                  boxShadow: "0 0 30px #00ff7f44, 0 4px 20px #00ff7f33",
+                }}
+              >
+                Take the red pill →
+              </a>
+              <button
+                type="button"
+                onClick={replay}
+                className="font-outfit text-xs text-[#666] hover:text-[#aaa] transition-colors"
+              >
+                ↺ Watch again
+              </button>
+            </div>
+          ) : (
+            <p className="font-outfit text-xs text-[#555] tracking-wide">
+              Sit through the presentation…
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ParticleField() {
   const particles = Array.from({ length: 30 }, (_, i) => ({
@@ -202,7 +378,7 @@ function StepCard({
   );
 }
 
-function ArtisticQR() {
+function ArtisticQR({ pill, onBlue }: { pill: Pill | null; onBlue: () => void }) {
   return (
     <div className="relative flex flex-col items-center gap-6">
       <div className="relative">
@@ -253,9 +429,15 @@ function ArtisticQR() {
       </div>
 
       <a
-        href={SITE_LINK}
+        href={appLink(pill)}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => {
+          if (pill === "blue") {
+            e.preventDefault();
+            onBlue();
+          }
+        }}
         className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full font-orbitron font-bold text-sm tracking-widest uppercase text-[#020202] transition-all duration-300 hover:scale-105 active:scale-95"
         style={{
           background: "linear-gradient(135deg, #00ff7f 0%, #00c96e 100%)",
@@ -273,6 +455,34 @@ function ArtisticQR() {
 }
 
 export default function App() {
+  const [pill] = useState<Pill | null>(() => readPill());
+  const [showVideo, setShowVideo] = useState(() => window.location.hash === BLUE_HASH);
+
+  // Keep the video view in step with the browser's back button.
+  useEffect(() => {
+    const sync = () => setShowVideo(window.location.hash === BLUE_HASH);
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("hashchange", sync);
+    };
+  }, []);
+
+  const openVideo = useCallback(() => {
+    window.history.pushState({ pillVideo: true }, "", BLUE_HASH);
+    setShowVideo(true);
+  }, []);
+
+  const closeVideo = useCallback(() => {
+    if (window.history.state?.pillVideo) {
+      window.history.back(); // popstate hides the video
+    } else {
+      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      setShowVideo(false);
+    }
+  }, []);
+
   return (
     <div
       className="relative min-h-full font-outfit text-white overflow-x-hidden"
@@ -439,7 +649,7 @@ export default function App() {
             Scan the code or tap below — make your picks on the 2026 Guild Elections before everyone else does.
           </p>
 
-          <ArtisticQR />
+          <ArtisticQR pill={pill} onBlue={openVideo} />
         </section>
 
         {/* ── FOOTER ───────────────────────────────────── */}
@@ -458,6 +668,8 @@ export default function App() {
           </p>
         </footer>
       </div>
+
+      {showVideo && <BluePillVideo onClose={closeVideo} link={appLink(pill ?? "blue")} />}
     </div>
   );
 }
