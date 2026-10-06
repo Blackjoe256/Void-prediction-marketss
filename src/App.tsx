@@ -1,15 +1,23 @@
-import { QRCodeSVG } from "qrcode.react";
-import voidLogo from "@/imports/image.png";
+import { QRCodeSVG } from "qrcode.react"
+import voidLogo from "@/imports/image.png"
+import { Analytics } from "@vercel/analytics/react"
 
 function VoidLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const scale = size === "lg" ? 1 : size === "sm" ? 0.45 : 0.75;
+  const scale = size === "lg" ? 1 : size === "sm" ? 0.45 : 0.75
   return (
-    <div className="flex flex-col items-center gap-1 select-none" style={{ transform: `scale(${scale})`, transformOrigin: "center top" }}>
-      <div className="flex items-baseline leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
+    <div
+      className="flex flex-col items-center gap-1 select-none"
+      style={{ transform: `scale(${scale})`, transformOrigin: "center top" }}
+    >
+      <div
+        className="flex items-baseline leading-none"
+        style={{ fontFamily: "'Outfit', sans-serif" }}
+      >
         <span
           className="font-black text-[5rem] tracking-tight"
           style={{
-            background: "linear-gradient(160deg, #5fffaa 0%, #00ff7f 40%, #00c96e 100%)",
+            background:
+              "linear-gradient(160deg, #5fffaa 0%, #00ff7f 40%, #00c96e 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -18,23 +26,27 @@ function VoidLogo({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
         >
           V
         </span>
-        <span className="font-bold text-[5rem] tracking-tight text-white" style={{ letterSpacing: "-0.02em" }}>
+        <span
+          className="font-bold text-[5rem] tracking-tight text-white"
+          style={{ letterSpacing: "-0.02em" }}
+        >
           oid
         </span>
       </div>
       <div className="flex items-center gap-2 mt-[-6px]">
-        <div className="h-px w-6 bg-[#00ff7f]" style={{ boxShadow: "0 0 6px #00ff7f" }} />
-        <span
-          className="font-orbitron text-[0.6rem] tracking-[0.45em] text-[#aaa] uppercase"
-        >
+        <div
+          className="h-px w-6 bg-[#00ff7f]"
+          style={{ boxShadow: "0 0 6px #00ff7f" }}
+        />
+        <span className="font-orbitron text-[0.6rem] tracking-[0.45em] text-[#aaa] uppercase">
           Prediction Markets
         </span>
       </div>
     </div>
-  );
+  )
 }
 
-const SITE_LINK = "https://voidpredictionmarkets.com/";
+const SITE_LINK = "https://voidpredictionmarkets.com/"
 
 function ParticleField() {
   const particles = Array.from({ length: 30 }, (_, i) => ({
@@ -45,7 +57,7 @@ function ParticleField() {
     delay: Math.random() * 5,
     duration: Math.random() * 8 + 6,
     opacity: Math.random() * 0.6 + 0.1,
-  }));
+  }))
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -65,7 +77,7 @@ function ParticleField() {
         />
       ))}
     </div>
-  );
+  )
 }
 
 function GridBackground() {
@@ -88,10 +100,16 @@ function GridBackground() {
         }}
       />
     </div>
-  );
+  )
 }
 
-function GlitchText({ children, className }: { children: string; className?: string }) {
+function GlitchText({
+  children,
+  className,
+}: {
+  children: string
+  className?: string
+}) {
   return (
     <div className={`relative inline-block ${className ?? ""}`}>
       <span className="relative z-10">{children}</span>
@@ -106,24 +124,37 @@ function GlitchText({ children, className }: { children: string; className?: str
         {children}
       </span>
     </div>
-  );
+  )
 }
 
-function StatCard({ number, label }: { number: string; label: string }) {
+function StatCard({ number, label }: { number: string label: string }) {
   return (
     <div
       className="relative px-6 py-4 rounded-xl border border-[#00ff7f22] text-center"
       style={{ background: "rgba(0,255,127,0.04)" }}
     >
-      <div className="font-orbitron text-2xl font-bold glow-green">{number}</div>
-      <div className="font-outfit text-xs text-[#888] uppercase tracking-widest mt-1">{label}</div>
+      <div className="font-orbitron text-2xl font-bold glow-green">
+        {number}
+      </div>
+      <div className="font-outfit text-xs text-[#888] uppercase tracking-widest mt-1">
+        {label}
+      </div>
     </div>
-  );
+  )
 }
 
 const STEP_ICONS: Record<string, JSX.Element> = {
   pick: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff7f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#00ff7f"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <circle cx="12" cy="12" r="10" />
       <circle cx="12" cy="12" r="6" />
       <circle cx="12" cy="12" r="2" fill="#00ff7f" stroke="none" />
@@ -134,14 +165,32 @@ const STEP_ICONS: Record<string, JSX.Element> = {
     </svg>
   ),
   lock: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff7f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#00ff7f"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <rect x="5" y="11" width="14" height="10" rx="2" />
       <path d="M8 11V7a4 4 0 0 1 8 0v4" />
       <circle cx="12" cy="16" r="1.2" fill="#00ff7f" stroke="none" />
     </svg>
   ),
   trophy: (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff7f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#00ff7f"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M6 9H4a2 2 0 0 1-2-2V5h4" />
       <path d="M18 9h2a2 2 0 0 0 2-2V5h-4" />
       <path d="M6 3h12v7a6 6 0 0 1-12 0V3z" />
@@ -151,7 +200,7 @@ const STEP_ICONS: Record<string, JSX.Element> = {
       <path d="M15 3v5" strokeWidth="1" stroke="#00ff7f55" />
     </svg>
   ),
-};
+}
 
 function StepCard({
   step,
@@ -160,24 +209,26 @@ function StepCard({
   desc,
   delay,
 }: {
-  step: string;
-  iconKey: string;
-  title: string;
-  desc: string;
-  delay: string;
+  step: string
+  iconKey: string
+  title: string
+  desc: string
+  delay: string
 }) {
   return (
     <div
       className="relative rounded-2xl p-6 border border-[#00ff7f15] flex flex-col gap-3 group hover:border-[#00ff7f44] transition-all duration-500"
       style={{
-        background: "linear-gradient(135deg, rgba(0,255,127,0.04) 0%, rgba(0,0,0,0.6) 100%)",
+        background:
+          "linear-gradient(135deg, rgba(0,255,127,0.04) 0%, rgba(0,0,0,0.6) 100%)",
         animationDelay: delay,
       }}
     >
       <div
         className="absolute top-0 left-0 right-0 h-px rounded-t-2xl"
         style={{
-          background: "linear-gradient(90deg, transparent, #00ff7f44, transparent)",
+          background:
+            "linear-gradient(90deg, transparent, #00ff7f44, transparent)",
         }}
       />
       <div className="flex items-center gap-3">
@@ -199,7 +250,7 @@ function StepCard({
       </h3>
       <p className="font-outfit text-[#888] text-sm leading-relaxed">{desc}</p>
     </div>
-  );
+  )
 }
 
 function ArtisticQR() {
@@ -262,14 +313,23 @@ function ArtisticQR() {
           boxShadow: "0 0 30px #00ff7f44, 0 4px 20px #00ff7f33",
         }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
           <polyline points="16 7 22 7 22 13" />
         </svg>
         Own the Odds
       </a>
     </div>
-  );
+  )
 }
 
 export default function App() {
@@ -301,15 +361,15 @@ export default function App() {
             className="font-orbitron font-black text-[clamp(2rem,8vw,5rem)] leading-tight tracking-tight max-w-4xl animate-text-glow"
             style={{ color: "#ffffff" }}
           >
-            SEE THE{" "}
-            <span className="glow-green">FUTURE</span>
+            SEE THE <span className="glow-green">FUTURE</span>
             <br />
             BEFORE IT HAPPENS
           </h1>
 
           <p className="mt-6 font-outfit text-[#888] text-lg sm:text-xl max-w-md leading-relaxed">
-            The first prediction market built <em className="text-[#bbb] not-italic">exclusively</em> for
-            campus students.
+            The first prediction market built{" "}
+            <em className="text-[#bbb] not-italic">exclusively</em> for campus
+            students.
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
@@ -334,15 +394,16 @@ export default function App() {
 
         {/* ── ABOUT ────────────────────────────────────── */}
         <section className="px-6 py-24 max-w-3xl mx-auto text-center">
-          <div
-            className="inline-block mb-6 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase"
-          >
+          <div className="inline-block mb-6 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase">
             What is Void
           </div>
 
           <h2 className="font-orbitron font-bold text-[clamp(1.5rem,5vw,2.8rem)] text-white leading-tight mb-8">
-            Guild Elections 2026.<br />
-            <GlitchText className="glow-green">Who do YOU think wins?</GlitchText>
+            Guild Elections 2026.
+            <br />
+            <GlitchText className="glow-green">
+              Who do YOU think wins?
+            </GlitchText>
           </h2>
 
           <div
@@ -361,7 +422,9 @@ export default function App() {
             />
             <p className="font-outfit text-[#ccc] text-lg leading-relaxed">
               Everyone on campus has an opinion about who's taking the guild.{" "}
-              <span className="text-white font-semibold">Void makes you prove it.</span>
+              <span className="text-white font-semibold">
+                Void makes you prove it.
+              </span>
             </p>
             <p className="font-outfit text-[#aaa] text-base leading-relaxed">
               Pick which candidate wins each position. Lock in your prediction
@@ -381,9 +444,7 @@ export default function App() {
         {/* ── HOW IT WORKS ─────────────────────────────── */}
         <section className="px-6 py-16 max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <div
-              className="inline-block mb-4 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase"
-            >
+            <div className="inline-block mb-4 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase">
               How it Works
             </div>
             <h2 className="font-orbitron font-bold text-2xl sm:text-3xl text-white">
@@ -418,14 +479,11 @@ export default function App() {
 
         {/* ── QR JOIN SECTION ───────────────────────────── */}
         <section className="px-6 py-24 max-w-lg mx-auto text-center">
-          <div
-            className="inline-block mb-6 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase"
-          >
+          <div className="inline-block mb-6 px-3 py-1 rounded border border-[#00ff7f22] font-orbitron text-[9px] tracking-[0.5em] text-[#00ff7f66] uppercase">
             Start Predicting
           </div>
           <h2 className="font-orbitron font-bold text-2xl sm:text-3xl text-white mb-3">
-            Your read.{" "}
-            <span className="glow-green">Your call.</span>
+            Your read. <span className="glow-green">Your call.</span>
           </h2>
 
           <p
@@ -436,7 +494,8 @@ export default function App() {
           </p>
 
           <p className="font-outfit text-[#666] text-sm mb-10">
-            Scan the code or tap below — make your picks on the 2026 Guild Elections before everyone else does.
+            Scan the code or tap below — make your picks on the 2026 Guild
+            Elections before everyone else does.
           </p>
 
           <ArtisticQR />
@@ -458,6 +517,7 @@ export default function App() {
           </p>
         </footer>
       </div>
+      <Analytics />
     </div>
-  );
+  )
 }
